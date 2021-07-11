@@ -1,1 +1,1 @@
-module.exports = require('./lib/express.js')
+module.exports = require('./lib/exress')

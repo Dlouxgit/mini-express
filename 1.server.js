@@ -10,9 +10,9 @@ app.get('/hello', function (req, res) {
     res.end('hello')
 })
 
-app.all('*', function (req, res) {
-    res.end('all')
-})
+// app.all('*', function (req, res) {
+//     res.end('all')
+// })
 
 app.listen(3000, function () {
     console.log('server start at 3000')
