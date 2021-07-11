@@ -60,9 +60,8 @@ Router.prototype.handle = function (req, res, done) {
             } else {
                 next(err)
             }
-        }
-        
-        if (layer.match(pathname)) { // 匹配路由与中间件
+        } else if (layer.match(pathname)) { // 匹配路由与中间件
+            // route.params = layer.params
             if (!layer.route) { // 中间件不需要匹配方法
                 console.log('layer', layer)
                 if (layer.handler.length === 4) {

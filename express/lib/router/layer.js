@@ -1,8 +1,19 @@
+const pathToRegExp = require('path-to-regexp') // 第三方模块，express 自带
+
 function Layer(path, handler) {
     this.path = path
+    this.regexp = pathToRegExp(this.path, (this.keys = []))
     this.handler = handler
 }
 Layer.prototype.match = function (pathname) {
+    const matches = pathname.match(this.regexp)
+    if (matches) {
+        console.log('matches, this.keys', matches, this.keys)
+        this.params = this.keys.reduce((memo, key, index) => (memo[key.name] = matches[index + 1], memo), {})
+        console.log('this.params', this.params)
+        return true
+    }
+
     if (this.path === pathname) {
         return true
     }

@@ -1,4 +1,4 @@
-const express = require('express')
+const express = require('./express')
 
 const app = express()
 
@@ -9,23 +9,23 @@ app.get('/user/:id/:name/xxx', function (req, res) {
     res.end(JSON.stringify(req.params))
 })
 
-let p = '/user/:id/:name/xxx/:xxx'
+// let p = '/user/:id/:name/xxx/:xxx'
 
-function pathToRegExp(str, keys) {
-    str = str.replace(/:([^\/]+)/g, function () {
-        keys.push(arguments[1])
-        return '([^\/]+)'
-    })
-    console.log(str)
-    return new RegExp(str)
-}
+// function pathToRegExp(str, keys) {
+//     str = str.replace(/:([^\/]+)/g, function () {
+//         keys.push(arguments[1])
+//         return '([^\/]+)'
+//     })
+//     console.log(str)
+//     return new RegExp(str)
+// }
 
-let keys = []
-let reg = pathToRegExp(p, keys)
+// let keys = []
+// let reg = pathToRegExp(p, keys)
 
-// let reg = /\/user\/([^\/]+)\/([^\/]+)\/xxx/
-let url = '/user/1/zf/xxx/asd'
-console.log(url.match(reg).slice(1), keys)
+// // let reg = /\/user\/([^\/]+)\/([^\/]+)\/xxx/
+// let url = '/user/1/zf/xxx/asd'
+// console.log(url.match(reg).slice(1), keys)
 
 app.listen(3000, function () {
     console.log('server start 3000')
