@@ -11,7 +11,7 @@ function Router() {
         }
     ]
 }
-Router.prototype.get = function (path, handler) {
+Router.prototype.get = function (path, handler) { // 向路由的 stack 添加
     this.stack.push({
         path,
         method: 'get',
@@ -19,7 +19,7 @@ Router.prototype.get = function (path, handler) {
     })
 }
 
-Router.prototype.handler = function (req, res, done) {
+Router.prototype.handler = function (req, res, done) { // 请求到来时，会匹配对应的路由处理函数
     let { pathname, query } = url.parse(req.url, true)
     let requestMethod = req.method.toLowerCase()
     for (let i = 0; i < this.stack.length; i++) {
@@ -28,7 +28,7 @@ Router.prototype.handler = function (req, res, done) {
             return handler(req, res)
         }
     }
-    done()
+    done() // 如果找不到路由，调用应用提供的 done 方法
 }
 
 module.exports = Router

@@ -1,7 +1,6 @@
 const http = require('http')
 const Router = require('./router')
 
-
 function Application () {
     // this._routers = [
     //     {
@@ -14,7 +13,7 @@ function Application () {
     // ]
     this.routers = new Router()
 }
-Application.prototype.get = function (path, handler) {
+Application.prototype.get = function (path, handler) { 
     // this._routers.push({
     //     method: 'get',
     //     path,
@@ -22,7 +21,7 @@ Application.prototype.get = function (path, handler) {
     // })
     this.routers.get(path, handler)
 }
-Application.prototype.listen = function (...args) {
+Application.prototype.listen = function (...args) { 
     // const server = http.createServer((req, res) => {
     //     const routers = this._routers
     //     let { pathname, query } = url.parse(req.url, true)
