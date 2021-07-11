@@ -8,5 +8,5 @@
 - express 和 koa 是同一班人马打造
 
 
-Layer 匹配路径
-Route 匹配方法
+Layer 匹配路径，路径上可以对应的是 Route.dispatch（路由），或者 use（中间件） 的回调
+Route 匹配方法，一个 Route 内存在又多个 Layer，但这些 Layer 只匹配方法名（get\post 等），同时 route 上会有属性标识这个 route 上有什么方法，暴露出来以供外部函数遍历时是否深入 Route 的 stack 继续遍历。

@@ -8,6 +8,7 @@ function Router() {
         router.handle(req, res, next) // 请求来了，从栈中匹配
     }
     router.stack = []
+    router.events = {}
     router.__proto__ = proto // 能 new 能执行，new 与 执行都返回的是一个函数
     return router
 }
@@ -50,6 +51,48 @@ methods.forEach(method => {
     }
 })
 
+proto.param = function (key, callback) {
+    console.log(key, callback)
+    if (this.events[key]) {
+        this.events[key].push(callback)
+    } else {
+        this.events[key] = [callback]
+    }
+}
+
+proto.handle_params = function (req, res, layer, out) {
+    let keys = layer.keys
+    if (!keys || !keys.length) return out()
+    keys = keys.reduce((memo, current) => [...memo, current.name], [])
+    
+    let events = this.events
+    let i = 0
+    let index = 0
+    let key
+    let fns
+    const next = () => {
+        if (keys.length === i) return out()
+        key = keys[i++]
+        fns = events[key]
+        if (fns && fns.length) {
+            processCallback()
+        } else {
+            next()
+        }
+    }
+    next()
+    function processCallback() {
+        let fn = fns[index++]
+        if (fn) {
+            fn(req, res, processCallback, layer.params[key], key)
+        } else {
+            index = 0
+            next()
+        }
+    }
+    console.log(keys, events)
+}
+
 proto.handle = function (req, res, done) {
     // 在路由的栈中查找，找不到就找下一个
     const { pathname } = url.parse(req.url)
@@ -78,7 +121,7 @@ proto.handle = function (req, res, done) {
             }
         } else {
             if (layer.match(pathname)) { // 匹配路由与中间件
-                // route.params = layer.params
+                req.params = layer.params
                 if (!layer.route) { // 中间件不需要匹配方法
                     console.log('layer', layer)
                     if (layer.handler.length === 4) {
@@ -93,7 +136,9 @@ proto.handle = function (req, res, done) {
                     }
                 } else {
                     if (layer.route.methods[method]) {
-                        layer.handle_request(req, res, next)
+                        this.handle_params(req, res, layer, () => {
+                            layer.handle_request(req, res, next)
+                        })
                     } else {
                         next()
                     }
