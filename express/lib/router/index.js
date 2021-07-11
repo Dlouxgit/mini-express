@@ -14,6 +14,26 @@ Router.prototype.route = function (path) {
     this.stack.push(layer)
     return route
 }
+
+Router.prototype.use = function (path) {
+    // console.log(path, handlers)
+    let args = Array.from(arguments)
+    console.log('args', args)
+    let handlers = []
+    if (typeof path === 'function') {
+        path = '/'
+        handlers = [...args]
+    } else {
+        handlers = args.slice(1)
+    }
+    handlers.forEach(handler => {
+        let layer = new Layer(path, handler)
+        layer.route = undefined
+        this.stack.push(layer)
+    })
+    console.log(path, handlers)
+}
+
 methods.forEach(method => {
     Router.prototype[method] = function (path, handlers) {
         let route = this.route(path)
@@ -29,9 +49,15 @@ Router.prototype.handle = function (req, res, done) {
     const next = () => {
         if (i == this.stack.length) return done()
         let layer = this.stack[i++]
-        if (layer.match(pathname)) {
-            if (layer.route.methods[method]) {
+        if (layer.match(pathname)) { // 匹配路由与中间件
+            if (!layer.route) { // 中间件不需要匹配方法
                 layer.handle_request(req, res, next)
+            } else {
+                if (layer.route.methods[method]) {
+                    layer.handle_request(req, res, next)
+                } else {
+                    next()
+                }
             }
         } else {
             next()

@@ -12,15 +12,24 @@ methods.forEach(method => {
     }
 })
 
+Application.prototype.lazy_route = function () {
+    if (!this.routers) {
+        this.routers = new Router()
+    }
+}
 // Application.prototype.get = function (path, ...handlers) {
 //     this.routers.get(path, handlers)
 // }
+Application.prototype.use = function (req, res, done) {
+    this.lazy_route()
+    this.routers.use(req, res, done)
+}
 Application.prototype.listen = function (...args) {
     const server = http.createServer((req, res) => {
         function done() {
             res.end(`Cannot ${req.method} ${req.url}`)
         }
-        // this.lazy_route()
+        this.lazy_route()
         this.routers.handle(req, res, done)
     })
     server.listen(...args)

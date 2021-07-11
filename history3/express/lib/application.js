@@ -12,6 +12,11 @@ methods.forEach(method => {
     }
 })
 
+Application.prototype.lazy_route = function () {
+    if (!this.routers) {
+        this.routers = new Router()
+    }
+}
 // Application.prototype.get = function (path, ...handlers) {
 //     this.routers.get(path, handlers)
 // }
@@ -20,7 +25,7 @@ Application.prototype.listen = function (...args) {
         function done() {
             res.end(`Cannot ${req.method} ${req.url}`)
         }
-        // this.lazy_route()
+        this.lazy_route()
         this.routers.handle(req, res, done)
     })
     server.listen(...args)
