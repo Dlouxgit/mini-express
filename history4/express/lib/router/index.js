@@ -60,23 +60,25 @@ Router.prototype.handle = function (req, res, done) {
             } else {
                 next(err)
             }
-        } else if (layer.match(pathname)) { // 匹配路由与中间件
-            if (!layer.route) { // 中间件不需要匹配方法
-                console.log('layer', layer)
-                if (layer.handler.length === 4) {
-                    next()
+        } else {
+            if (layer.match(pathname)) { // 匹配路由与中间件
+                if (!layer.route) { // 中间件不需要匹配方法
+                    console.log('layer', layer)
+                    if (layer.handler.length === 4) {
+                        next()
+                    } else {
+                        layer.handle_request(req, res, next)
+                    }
                 } else {
-                    layer.handle_request(req, res, next)
+                    if (layer.route.methods[method]) {
+                        layer.handle_request(req, res, next)
+                    } else {
+                        next()
+                    }
                 }
             } else {
-                if (layer.route.methods[method]) {
-                    layer.handle_request(req, res, next)
-                } else {
-                    next()
-                }
+                next()
             }
-        } else {
-            next()
         }
     }
     next()

@@ -26,7 +26,7 @@ methods.forEach(method => {
     Route.prototype[method] = function (handlers) {
         handlers.forEach(handler => {
             let layer = new Layer('/', handler)
-            this.methods[method] = method // 给每个方法都
+            this.methods[method] = true // 给每个方法都
 
             layer.method = method // 给每一层都添加一个方法
             this.stack.push(layer)
