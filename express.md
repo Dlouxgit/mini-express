@@ -6,3 +6,7 @@
 - express 中的特点是内部采用回调（组合 它内部不支持 promise 串联） koa 支持 promise 串联
 - express 里既可以 express()，也可以 new express()，因为用的是 es5 的类的写法，而 koa 采用 class 只能使用 new koa()
 - express 和 koa 是同一班人马打造
+
+
+Layer 匹配路径
+Route 匹配方法
